@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Node / Extension
+node_modules/
+
+# Env files
+.env
+
+# ML models (optional if large)
+*.pkl
+
+# OS junk
+.DS_Store
