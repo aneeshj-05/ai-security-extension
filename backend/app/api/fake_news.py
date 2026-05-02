@@ -8,5 +8,5 @@ router = APIRouter()
 
 @router.post("/analyze-content", response_model=ContentAnalysisResponse)
 def analyze(request: ContentAnalysisRequest):
-    result = analyze_content(request.title, request.body_text)
+    result = analyze_content(request.title, request.body_text, request.source_url)
     return ContentAnalysisResponse(**result)

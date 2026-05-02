@@ -1,6 +1,12 @@
 from app.models.loader import get_fake_news_model
 from app.utils.text_processing import extract_content_features, normalize_text
 
+SATIRE_DOMAINS = {
+    "theonion.com", "babylonbee.com", "newsthump.com",
+    "thebeaverton.com", "waterfordwhispersnews.com", "reductress.com",
+    "clickhole.com", "thedailymash.co.uk",
+}
+
 HEURISTIC_RULES = [
     (
         "short_body",
@@ -32,6 +38,12 @@ HEURISTIC_RULES = [
         "Text repeats sensational or conspiracy-style terms",
         25,
     ),
+    (
+        "clickbait_patterns",
+        lambda f: f.get("clickbait_pattern_count", 0) >= 2,
+        "Body text matches multiple clickbait/satire writing patterns",
+        20,
+    ),
 ]
 
 
@@ -47,9 +59,23 @@ def _heuristic_score(features: dict) -> tuple[int, list[str]]:
     return min(score, 100), reasons
 
 
-def analyze_content(title: str, body_text: str) -> dict:
+def _is_satire_domain(url: str) -> bool:
+    if not url:
+        return False
+    from urllib.parse import urlparse
+    host = urlparse(url).hostname or ""
+    host = host.removeprefix("www.")
+    return host in SATIRE_DOMAINS
+
+
+def analyze_content(title: str, body_text: str, source_url: str = "") -> dict:
     content_features = extract_content_features(title, body_text)
     risk_score, reasons = _heuristic_score(content_features)
+
+    if _is_satire_domain(source_url):
+        risk_score = max(risk_score, 60)
+        if "Known satire/parody website" not in reasons:
+            reasons.insert(0, "Known satire/parody website")
     model = get_fake_news_model()
     ml_confidence = None
     ml_enabled = model is not None
@@ -66,7 +92,7 @@ def analyze_content(title: str, body_text: str) -> dict:
 
     if model:
         ml_is_fake = ml_confidence >= model.threshold
-        rule_is_fake = risk_score >= 45
+        rule_is_fake = risk_score >= 30
         is_fake_news = ml_is_fake or rule_is_fake
 
         if ml_is_fake:
@@ -75,7 +101,7 @@ def analyze_content(title: str, body_text: str) -> dict:
 
         verdict = "Likely Fake News" if is_fake_news else "Likely Reliable"
     else:
-        is_fake_news = risk_score >= 50
+        is_fake_news = risk_score >= 30
         verdict = (
             "Suspicious Content" if is_fake_news else "Insufficient Fake-News Signals"
         )

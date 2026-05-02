@@ -26,6 +26,7 @@ class URLRequest(BaseModel):
 class ContentAnalysisRequest(BaseModel):
     title: str = ""
     body_text: str
+    source_url: str = ""
 
     @field_validator("title")
     @classmethod
