@@ -170,7 +170,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type === "ANALYZE_CONTENT") {
     globalThis.AiSecurityApi.analyzeContent(message.title, message.bodyText)
-      .then(sendResponse)
+      .then(async (result) => {
+        if (result.ok && result.data.is_fake_news && sender.tab) {
+          await chrome.action.setBadgeText({ tabId: sender.tab.id, text: "!" });
+          await chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: "#f59e0b" });
+          
+          const tabKey = `tab:${sender.tab.id}`;
+          const current = await chrome.storage.local.get(tabKey);
+          if (current[tabKey]) {
+            await chrome.storage.local.set({
+              [tabKey]: {
+                ...current[tabKey],
+                newsResult: result
+              }
+            });
+          }
+        }
+        sendResponse(result);
+      })
       .catch(error => {
         sendResponse({
           ok: false,

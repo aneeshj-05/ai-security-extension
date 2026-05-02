@@ -65,9 +65,11 @@ def analyze_content(title: str, body_text: str) -> dict:
             ml_model_version = None
 
     if model:
-        is_fake_news = ml_confidence >= model.threshold
+        ml_is_fake = ml_confidence >= model.threshold
+        rule_is_fake = risk_score >= 45
+        is_fake_news = ml_is_fake or rule_is_fake
 
-        if is_fake_news:
+        if ml_is_fake:
             risk_score = max(risk_score, round(ml_confidence * 100))
             reasons.append("ML model confidence exceeded fake-news threshold")
 

@@ -165,7 +165,7 @@ function showFakeNewsBanner(data) {
     <button class="ai-sec-close" id="ai-security-close-banner">Dismiss</button>
   `;
 
-  document.documentElement.insertBefore(banner, document.documentElement.firstChild);
+  document.body.insertBefore(banner, document.body.firstChild);
 
   document.getElementById("ai-security-close-banner").addEventListener("click", () => {
     banner.remove();
