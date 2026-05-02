@@ -9,6 +9,9 @@ node_modules/
 # Env files
 .env
 
+# Local datasets
+/data/
+
 # ML models (optional if large)
 *.pkl
 

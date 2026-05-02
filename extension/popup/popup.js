@@ -1,28 +1,34 @@
 document.addEventListener("DOMContentLoaded", async () => {
-
-  
   let statusEl = document.getElementById("status");
   let scoreEl = document.getElementById("score");
   let verdictEl = document.getElementById("verdict");
   let reasonsList = document.getElementById("reasons");
 
   statusEl.innerText = "🔍 Analyzing...";
+  reasonsList.innerHTML = "";
 
   try {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     let url = tab.url;
 
-    const response = await fetch("http://127.0.0.1:8000/api/v1/analyze-url", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ url: url })
-    });
+    if (!url || !url.startsWith("http")) {
+      statusEl.innerText = "ℹ️ Please navigate to a standard web page to analyze it.";
+      statusEl.style.color = "gray";
+      document.getElementById("score").innerText = "";
+      document.getElementById("verdict").innerText = "";
+      return;
+    }
 
-    const data = await response.json();
+    const result = await globalThis.AiSecurityApi.analyzeUrl(url);
 
-    
+    if (!result.ok) {
+      statusEl.innerText = "⚠️ " + result.message;
+      statusEl.style.color = "orange";
+      return;
+    }
+
+    const data = result.data;
+
     if (data.is_phishing) {
       statusEl.innerText = "🔴 Phishing Detected";
       statusEl.style.color = "red";
@@ -31,7 +37,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       statusEl.style.color = "green";
     }
 
-    
     scoreEl.innerText = "Risk Score: " + data.risk_score + " / 100";
 
     if (data.risk_score > 70) {
@@ -42,10 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       scoreEl.style.color = "green";
     }
 
-    
     verdictEl.innerText = data.verdict !== "Safe" ? data.verdict : "";
 
-    
     let summary = document.createElement("p");
     summary.style.fontWeight = "bold";
 
@@ -55,7 +58,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     verdictEl.after(summary);
 
-    
     let riskLevel;
 
     if (data.risk_score > 70) {
@@ -71,32 +73,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     scoreEl.after(riskText);
 
-    
-    reasonsList.innerHTML = "";
+    if (data.reasons && data.reasons.length > 0) {
+      document.getElementById("reasons-header").style.display = "block";
+      data.reasons.forEach(reason => {
+        let li = document.createElement("li");
 
-    data.reasons.forEach(reason => {
-      let li = document.createElement("li");
+        if (reason.toLowerCase().includes("domain") || reason.toLowerCase().includes("trusted")) {
+          li.innerText = "🌐 " + reason;
+        } else if (reason.toLowerCase().includes("https")) {
+          li.innerText = "🔒 " + reason;
+        } else {
+          li.innerText = "⚠️ " + reason;
+        }
 
-      if (reason.toLowerCase().includes("domain")) {
-        li.innerText = "🌐 " + reason;
-      } else if (reason.toLowerCase().includes("https")) {
-        li.innerText = "🔒 " + reason;
-      } else {
-        li.innerText = "⚠️ " + reason;
-      }
+        reasonsList.appendChild(li);
+      });
+    }
 
-      reasonsList.appendChild(li);
-    });
-
-    
-    if (data.ml_confidence !== undefined) {
+    if (typeof data.ml_confidence === "number") {
       let mlText = document.createElement("p");
       mlText.innerText = "ML Confidence: " + Math.round(data.ml_confidence * 100) + "%";
       document.body.appendChild(mlText);
     }
 
   } catch (error) {
-    statusEl.innerText = "⚠️ Error connecting to backend";
+    statusEl.innerText = "⚠️ Backend unavailable. Start the local API and try again.";
+    statusEl.style.color = "red";
   }
 
 });
