@@ -169,7 +169,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === "ANALYZE_CONTENT") {
-    globalThis.AiSecurityApi.analyzeContent(message.title, message.bodyText)
+    globalThis.AiSecurityApi.analyzeContent(message.title, message.bodyText, message.sourceUrl)
       .then(async (result) => {
         if (result.ok && result.data.is_fake_news && sender.tab) {
           await chrome.action.setBadgeText({ tabId: sender.tab.id, text: "!" });

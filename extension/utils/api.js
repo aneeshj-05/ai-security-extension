@@ -28,10 +28,10 @@ async function analyzeUrlsBatch(urls) {
   }));
 }
 
-async function analyzeContent(title, bodyText) {
+async function analyzeContent(title, bodyText, sourceUrl = "") {
   const result = await requestJson(
     "/api/v1/analyze-content",
-    { title, body_text: bodyText },
+    { title, body_text: bodyText, source_url: sourceUrl },
     globalThis.AI_SECURITY_CONFIG.API_TIMEOUT_MS
   );
 

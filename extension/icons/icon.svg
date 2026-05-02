@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa"/>
+      <stop offset="100%" style="stop-color:#a78bfa"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shield body -->
+  <path d="M64 8 L108 26 L108 62 C108 88 88 108 64 120 C40 108 20 88 20 62 L20 26 Z"
+        fill="url(#shieldGrad)" />
+
+  <!-- Shield inner highlight -->
+  <path d="M64 18 L100 33 L100 62 C100 83 84 100 64 111 C44 100 28 83 28 62 L28 33 Z"
+        fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+  <!-- Eye white -->
+  <ellipse cx="64" cy="62" rx="22" ry="14" fill="white" opacity="0.95"/>
+
+  <!-- Eye iris -->
+  <circle cx="64" cy="62" r="9" fill="url(#eyeGrad)"/>
+
+  <!-- Eye pupil -->
+  <circle cx="64" cy="62" r="4.5" fill="#1e1b4b"/>
+
+  <!-- Eye shine -->
+  <circle cx="68" cy="58" r="2" fill="white" opacity="0.8"/>
+
+  <!-- AI scan lines -->
+  <line x1="36" y1="56" x2="42" y2="56" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="36" y1="62" x2="42" y2="62" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="36" y1="68" x2="42" y2="68" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="86" y1="56" x2="92" y2="56" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="86" y1="62" x2="92" y2="62" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="86" y1="68" x2="92" y2="68" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+</svg>
