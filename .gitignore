@@ -17,3 +17,5 @@ node_modules/
 
 # OS junk
 .DS_Store
+
+datasets/
