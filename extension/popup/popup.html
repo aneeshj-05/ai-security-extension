@@ -1,24 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <title>AI Security Check</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
 
-  <h2> Security Check</h2>
+<div class="popup-wrapper">
 
-  <p id="status">Checking...</p>
-  <p id="score"></p>
-  <p id="verdict"></p>
+  <!-- Header -->
+  <div class="popup-header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-title">CredenceAI</div>
+      <div class="header-subtitle">Identifying Deception,Protecting Trust.</div>
+    </div>
+  </div>
 
-  <h4 id="reasons-header" style="display: none;">Reasons:</h4>
-  <ul id="reasons"></ul>
+  <!-- Body -->
+  <div class="popup-body">
 
-  <script src="../config/constants.js"></script>
-  <script src="../utils/api.js"></script>
-  <script src="popup.js"></script>
+    <!-- Status Banner -->
+    <div class="status-banner status-analyzing" id="status-banner">
+      <div class="status-indicator">
+        <div class="status-dot" id="status-dot"></div>
+        <p id="status">Scanning...</p>
+      </div>
+      <p id="verdict"></p>
+    </div>
+
+    <!-- Metrics Row -->
+    <div class="metrics-row" id="metrics-row" style="display:none;">
+      <div class="metric-card">
+        <div class="metric-label">Risk Score</div>
+        <div class="metric-value" id="score-num" style="color: var(--cyber-accent2);">—</div>
+        <div class="metric-sub">/ 100</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Threat Level</div>
+        <div class="metric-value" id="risk-level-val" style="font-size:14px; padding-top:3px; color: var(--cyber-accent);">—</div>
+        <div class="metric-sub" id="score-sub"></div>
+      </div>
+    </div>
+
+    <!-- Risk Bar -->
+    <div class="risk-bar-wrap" id="risk-bar-section" style="display:none;">
+      <div class="risk-bar-label">
+        <span>Threat Index</span>
+        <span id="bar-pct">0%</span>
+      </div>
+      <div class="risk-bar-track">
+        <div class="risk-bar-fill" id="risk-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <p class="summary-line" id="summary-line" style="display:none;"></p>
+
+    <!-- Reasons -->
+    <div class="reasons-section" id="reasons-section">
+      <div class="reasons-header">Indicators</div>
+      <ul id="reasons"></ul>
+    </div>
+
+    <!-- AI Confidence -->
+    <div class="ai-conf" id="ai-conf" style="display:none;">
+      <span>Phishing AI Confidence</span>
+      <span id="ai-conf-val" style="color: var(--cyber-accent);">—</span>
+    </div>
+
+    <!-- News Section (injected dynamically) -->
+    <div id="news-section-container"></div>
+
+  </div>
+</div>
+
+<script src="../config/constants.js"></script>
+<script src="../utils/api.js"></script>
+<script src="popup.js"></script>
 
 </body>
 </html>
