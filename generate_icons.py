@@ -15,7 +15,7 @@ def draw_icon(size):
         return (x * s / 128, y * s / 128)
 
     # ── Shield (fills nearly full canvas) ────────────────────────────────────
-    shield = [p(64,2), p(120,22), p(120,68), p(104,94), p(64,126), p(24,94), p(8,68), p(8,22)]
+    shield = [p(64,1), p(122,20), p(122,68), p(106,96), p(64,127), p(22,96), p(6,68), p(6,20)]
 
     # Deep blue base
     d.polygon(shield, fill=(10, 30, 80, 255))
